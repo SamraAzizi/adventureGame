@@ -51,3 +51,26 @@ Here are some rules to follow:
 Here is the chat history, use this to understand what to say next: {chat_history}
 Human: {human_input}
 AI:"""
+
+prompt = PromptTemplate(
+    input_variables=["chat_history", "human_input"],
+    template=template
+)
+
+llm = OpenAI(openai_api_key=OPENAI_API_KEY)
+llm_chain = LLMChain(
+    llm=llm,
+    prompt=prompt,
+    memory=cass_buff_memory
+)
+
+choice = "start"
+
+while True:
+    response = llm_chain.predict(human_input=choice)
+    print(response.strip())
+
+    if "The End." in response:
+        break
+
+    choice = input("Your reply: ")
